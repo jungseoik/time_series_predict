@@ -1,0 +1,10 @@
+{
+    "patch_length": 64,
+    "n_patches": 8,
+    "prediction_length": 15,
+    "tst_size": 15,
+    "model_dim": 128,
+    "heads": 16,
+    "layer": 4,
+    "epoch": 500
+}
