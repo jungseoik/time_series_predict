@@ -25,3 +25,7 @@ conda install ipykernel ipywidgets
 2. 프로젝트 주제 선정
 
 3. 데이터 수집
+
+# 최종 발표
+[Uploading Save Orcas and Dolphins Wide Presentation.pdf…]()
+
