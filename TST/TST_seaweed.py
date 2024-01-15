@@ -17,7 +17,7 @@ sys.path.append('C:/Users/user/Desktop/TW_project')
 from Utils.metrics import mape,mae ,mse, rmse, r_squered
 from TST.Tset import PatchTSDataset, PatchTSDatasetX
 from TST.tf import PatchTST
-
+from TST.config import config_list
 
 # 하이퍼파라미터 정의
 # 트랜스포머 레이어 수(L)는 {3, 4, 5}로 변화시키고 모델 차원(D)은 {128, 256}으로 선택했습니다. 피드 포워드 네트워크의 내부 레이어는 F=2D입니다. 총 6가지 다른 모델 하이퍼파라미터 세트를 검토합니다
@@ -27,6 +27,8 @@ patch_length, n_patches, prediction_length, tst_size, model_dim, heads, layer, e
 
 list = [[4, 64, 30, 30, 512, 8, 4, 1]]
 results = []
+
+list = config_list("15일")
 
 
 for patch_length, n_patches, prediction_length, tst_size, model_dim, num_heads, num_layers ,epoch in list:
