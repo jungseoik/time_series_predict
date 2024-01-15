@@ -15,16 +15,19 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
 import sys
-sys.path.append('C:/Users/user/Desktop/TW_project') 
+sys.path.append('/home/ssm/work/EST_wassup_tw_06-main')
+
 from Utils.metrics import mape,mae ,mse, rmse, r_squered
 from NN.Nset import TimeSeriesDataset
 from NN.ANN import Net
 
+from Utils.metrics import mape,mae ,mse, rmse, r_squered
+from NN.config import config_list
+
 
 # years = '2016-01-2021-05-31'
 years = '2020-06-2021-05-31'
-
-df = pd.read_csv('Data/' + years + '_all.csv')
+df = pd.read_csv('/home/ssm/work/EST_wassup_tw_06-main/Data/' + years + '_all.csv')
 df['일시'] = df['Unnamed: 0']
 df = df.drop(columns='Unnamed: 0')
 df['일시'] = pd.to_datetime(df['일시'])
@@ -34,8 +37,9 @@ print(df.shape)
 result = []     # metric 담을 lst
 
 
-
-ord_lst = [[15, 5, 1, 400, 0.0001]]
+ord_lst = config_list("15일")
+print(ord_lst)
+# ord_lst = [[15, 5, 1, 400, 0.0001]]
 
 for pred_size, lookback_size, forecast_size, epoch, lr in ord_lst:
 	print(pred_size, lookback_size, forecast_size, epoch, lr)
@@ -115,7 +119,7 @@ for pred_size, lookback_size, forecast_size, epoch, lr in ord_lst:
 	plt.plot(epochs_to_plot, trn_losses[plot_start:], label='train_loss')
 	plt.xticks(range(plot_start, epoch, 100))
 	plt.legend()
-	plt.savefig(f'./fig_ANN_0221_3/ANN_loss_{years}_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}.png')
+	plt.savefig(f'./fig_ANN/ANN_loss_{years}_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}.png')
 	plt.show
 
 
@@ -144,7 +148,7 @@ for pred_size, lookback_size, forecast_size, epoch, lr in ord_lst:
 	MAE = mae(preds,tst_y)
 	MSE = mse(preds,tst_y)
 	RMSE = rmse(preds,tst_y)
-	R2 = r_squared(preds,tst_y)
+	R2 = r_squered(preds,tst_y)
 	result.append([(pred_size, lookback_size, forecast_size, epoch, lr), MAPE, MAE, MSE, RMSE, R2])
 
 	print(p.shape)
@@ -160,10 +164,9 @@ for pred_size, lookback_size, forecast_size, epoch, lr in ord_lst:
 	plt.plot(range(pred_size), tst_y, label="True")
 	plt.plot(range(pred_size), preds, label="Prediction")
 	plt.legend()
-	plt.savefig(f'./fig_ANN_0221_3/ANN_{years}_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}_hidden1.png')
+	plt.savefig(f'./fig_ANN/ANN_{years}_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}_hidden1.png')
 	plt.show()
 	
 result_df = pd.DataFrame(result, columns=['order', 'MAPE', 'MAE', 'MSE', 'RMSE', 'R2'])
 result_df.set_index('order', inplace=True)
-# result_df.to_csv(f'./result/ANN_result_{years}_hidden1.csv')
-result_df.to_csv(f'./fig_ANN_0221_3/ANN_result_{years}_hidden1_3.csv')
+result_df.to_csv(f'./fig_ANN/ANN_result_{years}_hidden1.csv')

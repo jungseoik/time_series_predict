@@ -17,11 +17,12 @@ print(device)
 import sys
 sys.path.append('C:/Users/user/Desktop/TW_project') 
 from Utils.metrics import mape,mae ,mse, rmse, r_squered
-from NN_2ch.Nset2 import TimeSeriesDatasetMulti,generate_time_series_loaders
+from NN_2ch.Nset2 import TimeSeriesDatasetMulti, generate_time_series_loaders
 from NN_2ch.ANN2 import NetMulti
 
 order_lst = [[30, 90, 15, 512, 2, 500, 0.0001], [30, 90, 15, 512, 2, 1500, 0.0001]]
 result = []
+
 for pred_size, lookback_size, forecast_size, hidden_dim, channel_size, epoch, lr in order_lst:
 	print(f'pred_size: {pred_size}, lookback_size: {lookback_size}, forecast_size: {forecast_size}, hidden_dim: {hidden_dim}, channel_size: {channel_size}, epoch: {epoch}, lr: {lr}')
 
@@ -75,10 +76,10 @@ for pred_size, lookback_size, forecast_size, hidden_dim, channel_size, epoch, lr
 		trn_losses.append(trn_loss)
 		tst_rmse_losses.append(tst_rmse)
 
-	# path = f'tst_mape: {tst_mape}, ...'
-	# torch.save(model.state_dict(), path)	# pth file. 가중치 저장
+	path = f'./NN_{channel_size}ch/model/model_ANN_{channel_size}multi.pth'
+	torch.save(net.state_dict(), path)
 
-	plot_start = 50     # 1부터 하면 훅 떨어지는거 그리느라 뒷부분이 잘 안보여서 확대한 것
+	plot_start = 50	 # 그래프 디테일하게 보기 위해 확대
 	epochs_to_plot = range(plot_start, epoch)
 	plt.figure(figsize=(10, 5))
 	plt.title(f"Neural Network {channel_size}Multi-channel_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}")
@@ -87,13 +88,14 @@ for pred_size, lookback_size, forecast_size, hidden_dim, channel_size, epoch, lr
 	plt.plot(epochs_to_plot, trn_losses[plot_start:], label='train_loss')
 	plt.xticks(range(plot_start, epoch, 100))
 	plt.legend()
+	plt.savefig(f'./NN_{channel_size}ch/fig/ANN_{channel_size}multi_loss_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}.png')
 	plt.show
 
 	preds = []
 	x, y = trn_Ods[len(trn_Ods)-1]  #마지막의 input(15개), output(5개) 값을 가져옴
 
-	# net = NetMulti(*args, **kwargs)	# 빈 모델 생성해와서
-	# net.load_state_dict(torch.load(path))	# 레이어에 맞는 가중치로 로드 > 예측할때 사용할 가중치
+	net = NetMulti(lookback_size, forecast_size, hidden_dim, channel_size)
+	net.load_state_dict(torch.load(path))
 
 	net.eval()
 	for _ in range(int(pred_size/forecast_size)):
@@ -114,13 +116,20 @@ for pred_size, lookback_size, forecast_size, hidden_dim, channel_size, epoch, lr
 	MAE = mae(final_preds, tst_y)
 	MSE = mse(final_preds, tst_y)
 	RMSE = rmse(final_preds, tst_y)
-	R2S = r_squered(final_preds, tst_y)
-	# R2S = r2_score(final_preds, tst_y)
-	# result.append([(pred_size, lookback_size, forecast_size, epoch, lr), MAPE, MAE, MSE, RMSE, R2])
+	R2 = r_squered(final_preds, tst_y)
+	R2S = r2_score(final_preds, tst_y)
+	result.append([(pred_size, lookback_size, forecast_size, epoch, lr), MAPE, MAE, MSE, RMSE, R2, R2S])
 
 	plt.figure(figsize=(10, 5))
 	plt.title(f"NN {channel_size}Multi-channel_({pred_size},{lookback_size},{forecast_size})_{epoch}_MAPE:{MAPE:.3f}, MAE:{MAE:.3f}, MSE:{MSE:.3f}, RMSE:{RMSE:.3f}, R2:{R2:.3f}, R2S:{R2S:.3f}")
 	plt.plot(range(pred_size), tst_y, label="True")
 	plt.plot(range(pred_size), final_preds, label="Prediction")
 	plt.legend()
+	plt.savefig(f'./NN_{channel_size}ch/result/ANN_{channel_size}multi_({pred_size},{lookback_size},{forecast_size})_{epoch}_{lr}.png')
 	plt.show()
+
+pd.set_option('float_format', '{:.4f}'.format)
+result_df = pd.DataFrame(result, columns=['order', 'MAPE', 'MAE', 'MSE', 'RMSE', 'R2', 'R2S'])
+result_df.set_index('order', inplace=True)
+result_df.to_csv(f'./NN_{channel_size}ch/ANN_' + str(channel_size) + 'multi_result_' + '.csv')
+result_df
