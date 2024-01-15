@@ -1,0 +1,7 @@
+{
+    "pred_size": 30,
+    "lookback_size": 5,
+    "forecast_size": 1,
+    "epoch": 400,
+    "lr": 0.0001
+}
