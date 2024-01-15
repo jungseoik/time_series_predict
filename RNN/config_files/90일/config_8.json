@@ -1,0 +1,7 @@
+{
+    "input_size": 2,
+    "hidden_size": 1024,
+    "output_size": 2,
+    "layers": 3,
+    "period": 90
+}
