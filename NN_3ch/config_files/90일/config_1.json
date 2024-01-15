@@ -1,0 +1,11 @@
+{
+    "pred_size": 90,
+    "lookback_size": 15,
+    "forecast_size": 1,
+    "hidden_dim1": 512,
+    "hidden_dim2": 128,
+    "hidden_dim3": 32,
+    "channel_size": 3,
+    "epoch": 850,
+    "lr": 0.0001
+}
