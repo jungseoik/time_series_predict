@@ -1,7 +1,4 @@
-# EST_wassup_tw_06
-ESTSoft Wassup 1기 두번째 시계열 프로젝트
-
-# ESTSoft Wassup 1기 두번째 프로젝트 
+# East coast water temperature forecast
 
 정서익
 임정은
@@ -23,6 +20,4 @@ conda install ipykernel ipywidgets
 
 3. 데이터 수집
 
-# 최종 발표
-[Uploading Save Orcas and Dolphins Wide Presentation.pdf…]()
 
