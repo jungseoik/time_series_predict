@@ -1,9 +1,6 @@
 # EST_wassup_tw_06
 ESTSoft Wassup 1기 두번째 시계열 프로젝트
 
-
-## 강사님 저희 아직 깃정리 덜했는디여..리드미도 작성안했는뎅..
-
 # ESTSoft Wassup 1기 두번째 프로젝트 
 
 정서익
@@ -11,8 +8,8 @@ ESTSoft Wassup 1기 두번째 시계열 프로젝트
 송승민
 오세형
 
-
 # Get Started
+
 ## Environment Setting
 실험 환경
 패키지 설치
