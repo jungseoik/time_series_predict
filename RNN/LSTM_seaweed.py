@@ -7,42 +7,31 @@ from sklearn.preprocessing import MinMaxScaler
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim 
+import torch.optim as optim
+
+from LSTM_config import load_config_list, save_config_list
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
 
 import sys
-sys.path.append('C:/Users/user/Desktop/TW_project') 
-from Utils.metrics import mape,mae ,mse, rmse, r_squered
+sys.path.append('./')
+# from Utils.metrics import mape, mae, mse, rmse, r_squered
+from Utils.metrics import mape, mae, mse, rmse, r_squered
 from RNN.Lset import TimeSeriesDataset
 from RNN.lstm import StatelessLSTM , StatefulLSTM2 , StatefulLSTM1
 
-
-
 # 하이퍼파라미터 정의
 input_size, hidden_size, output_size, layers , period  = 1 , 2 , 32,  4 , 30
-# list = [[2,2,2,1,15],[2,4,2,1,15],[2,8,2,1,15],[2,16,2,1,15],
-#         [2,2,2,2,15],[2,4,2,2,15],[2,8,2,2,15],[2,16,2,2,15]
-#         ,[2,2,2,4,15],[2,4,2,4,15],[2,8,2,4,15],[2,16,2,4,15],
-#         [2,2,2,8,15],[2,4,2,8,15],[2,8,2,8,15],[2,16,2,8,15],
-#         [2,2,2,16,15],[2,4,2,16,15],[2,8,2,16,15],[2,16,2,16,15],
-#         [2,2,2,1,30],[2,4,2,1,30],[2,8,2,1,30],[2,16,2,1,30],
-#         [2,2,2,2,30],[2,4,2,2,30],[2,8,2,2,30],[2,16,2,2,30]
-#         ,[2,2,2,4,30],[2,4,2,4,30],[2,8,2,4,30],[2,16,2,4,30],
-#         [2,2,2,8,30],[2,4,2,8,30],[2,8,2,8,30],[2,16,2,8,30],
-#         [2,2,2,16,30],[2,4,2,16,30],[2,8,2,16,30],[2,16,2,16,30]]
-list = [[2,512,2,3,15], [2,256,2,2,15]]
-# 히든size 512, 1024 , layer 최대 4개까지 , output 1개보고 1개 예측부터,
-# 트레인도 같이보면 잘 나오는지 예측을 잘 하다가 뒤에가서 직선이 나오는건지 확인이 가능하다.
-# 앞에서부터 직선형태가 나오는지, state리셋하고 관찰해보면 모델이 예측을 잘하는 능력이 없는건지
-# 트레인은 잘 예측하고 테스트는 예측을 잘못하는지 분석가능, 
 
+#15일, 30일, 60일, 90일
+str = "15일"
+selected_list = load_config_list(str)
 
 results = []
-from lion_pytorch import Lion
 # 모델 학습 및 예측
 # for period in prediction_periods:
-for input_size, hidden_size, output_size, layers, period in list:
+for input_size, hidden_size, output_size, layers, period in selected_list:
     # 데이터 스케일링 및 준비
     df = pd.read_csv('Data/2020-06-2021-05-31_all.csv')
     df.head()
@@ -90,7 +79,7 @@ for input_size, hidden_size, output_size, layers, period in list:
     # 2 64 2 4
     
     # optim = torch.optim.Adam(rnn.parameters(), lr=0.0001)
-    optim = Lion(rnn.parameters(), lr=0.0001)
+    optim = torch.optim.AdamW(rnn.parameters(), lr=0.0001)
     # 옵티마이저 건드려보자.
     # Adam말고 다른거 lion 예전거들도 성능좋은거 있다.
     # 바꿔보자
